@@ -1,0 +1,29 @@
+// Number Customer Woo
+function Lotus_count_woocommerce_customers() {
+    $args = array(
+        'role'    => 'customer',
+        'orderby' => 'ID',
+        'order'   => 'ASC',
+        'fields'  => 'ID',
+    );
+    
+    // دریافت لیست کاربران با نقش "customer"
+    $users = get_users( $args );
+    
+    // شمارش تعداد کاربران
+    $customer_count = count( $users );
+    
+    // اگر تعداد مشتریان بیشتر از 5 بود، تعداد را نشان می‌دهیم
+    if ( $customer_count > 0 ) {
+        return $customer_count;
+    }
+    
+    // در غیر این صورت خروجی مخفی است (هیچ مقداری نمایش داده نمی‌شود)
+    return '';
+}
+
+function Lotus_woocommerce_customers_shortcode() {
+    return Lotus_count_woocommerce_customers();
+}
+
+add_shortcode( 'Lotus_customer_count', 'Lotus_woocommerce_customers_shortcode' );
