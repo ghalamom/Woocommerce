@@ -1,0 +1,17 @@
+add_action( 'woocommerce_order_status_changed', 'mweb_auto_delete_orders', 10, 4 );
+ 
+function mweb_auto_delete_orders( $order_id, $old_status, $new_status, $order ) {
+ 
+    if ( in_array($new_status, array('cancelled', 'failed', 'pending', 'pending')) ) {
+        $order_date = $order->get_date_created();
+        $current_time = current_time( 'timestamp' );
+        $delete_after_minutes = 10; // 10 دقیقه
+ 
+        // محاسبه زمان گذشته شده از زمان ایجاد سفارش به دقیقه
+        $time_diff = absint( ( $current_time - strtotime( $order_date->date('Y-m-d H:i:s') ) ) / 60 );
+ 
+        if ( $time_diff >= $delete_after_minutes ) {
+            wp_delete_post( $order_id, true ); // حذف سفارش
+        }
+    }
+}
