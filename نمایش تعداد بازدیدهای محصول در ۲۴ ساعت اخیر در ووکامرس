@@ -1,0 +1,89 @@
+function mweb_get_user_ip() {
+    $ip = false;
+ 
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        $ip_array = explode(',', $ip);
+        $ip = trim($ip_array[0]);
+    } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+ 
+    if (filter_var($ip, FILTER_VALIDATE_IP)) {
+        return $ip;
+    }
+ 
+    return $ip;
+}
+ 
+function mweb_track_product_views_24h() {
+    if (is_singular('product')) {
+        global $post;
+        $post_id = $post->ID;
+  
+        $user_ip = mweb_get_user_ip();
+     
+    if( !$user_ip ){
+      return false;
+    }
+     
+        $current_time = current_time('timestamp'); // زمان فعلی
+  
+        $views_data = get_post_meta($post_id, 'views_data', true);
+        if (!$views_data) {
+            $views_data = []; 
+        }
+  
+        foreach ($views_data as $key => $data) {
+            if (($current_time - $data['time']) > 86400) { // 86400 ثانیه = 24 ساعت
+                unset($views_data[$key]);
+            }
+        }
+  
+        $ip_exists = false;
+        foreach ($views_data as $data) {
+            if ($data['ip'] === $user_ip) {
+                $ip_exists = true;
+                break;
+            }
+        }
+  
+        if (!$ip_exists) {
+            $views_data[] = ['ip' => $user_ip, 'time' => $current_time];
+            update_post_meta($post_id, 'views_data', $views_data);
+        }
+    }
+}
+add_action('wp', 'mweb_track_product_views_24h');
+  
+  
+function mweb_display_product_views_24h() {
+    echo do_shortcode('[product_views_24h]');
+}
+add_action('woocommerce_single_product_summary', 'mweb_display_product_views_24h', 25);
+  
+// شورتکد نمایش تعداد بازدیدهای 24 ساعت اخیر
+function mweb_product_views_24h_shortcode() {
+    if (is_singular('product')) {
+        global $post;
+        $views_data = get_post_meta($post->ID, 'views_data', true);
+        if (!$views_data) {
+            $views_data = [];
+        }
+  
+        $current_time = current_time('timestamp');
+        $recent_views = 0;
+  
+        foreach ($views_data as $data) {
+            if (($current_time - $data['time']) <= 86400) {
+                $recent_views++;
+            }
+        }
+  
+        return '<p>تعداد بازدیدهای این محصول در 24 ساعت گذشته: ' . $recent_views . '</p>';
+    }
+    return '';
+}
+add_shortcode('product_views_24h', 'mweb_product_views_24h_shortcode');
