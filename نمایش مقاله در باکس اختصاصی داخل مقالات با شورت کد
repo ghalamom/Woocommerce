@@ -1,0 +1,64 @@
+// نمایش مقاله در باکس اختصاصی داخل مقالات
+// [ghalamom id="123"]
+
+function ghalamom_article_box_shortcode($atts) {
+
+    $atts = shortcode_atts([
+        'id' => '',
+    ], $atts, 'ghalamom');
+
+    $ids = array_map('trim', explode(',', $atts['id']));
+    if (empty($ids)) return '';
+
+    ob_start();
+    echo '<div class="ghalamom-custom-article-box-container">';
+
+    foreach ($ids as $post_id) {
+
+        if (!is_numeric($post_id)) continue;
+
+        $post = get_post($post_id);
+        if (!$post || $post->post_status !== 'publish') continue;
+
+        $title = get_the_title($post_id);
+        $link  = get_permalink($post_id);
+
+        // تصویر شاخص
+        if (has_post_thumbnail($post_id)) {
+            $image = get_the_post_thumbnail_url($post_id, 'medium');
+        } else {
+            $image = get_template_directory_uri() . '/assets/images/placeholder.jpg';
+        }
+        ?>
+
+        <!-- کل باکس لینک شده -->
+        <a href="<?php echo esc_url($link); ?>" 
+           class="ghalamom-custom-article-box" 
+           aria-label="<?php echo esc_attr('مطالعه مقاله ' . $title); ?>">
+
+            <div class="ghalamom-cab-image">
+                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>">
+            </div>
+
+            <div class="ghalamom-cab-content">
+
+                <h2>
+                    <?php echo esc_html($title); ?>
+                </h2>
+
+                <span class="ghalamom-cab-button">
+                    مطالعه مقاله
+                </span>
+
+            </div>
+
+        </a>
+
+        <?php
+    }
+
+    echo '</div>';
+    return ob_get_clean();
+}
+
+add_shortcode('ghalamom', 'ghalamom_article_box_shortcode');
