@@ -62,3 +62,130 @@ function ghalamom_article_box_shortcode($atts) {
 }
 
 add_shortcode('ghalamom', 'ghalamom_article_box_shortcode');
+
+
+
+
+
+
+
+
+
+
+
+
+/* استایل نمایش مقالات در نوشته ها با شورت کد */
+.ghalamom-custom-article-box-container {
+    display: flex;
+    flex-direction: row;
+	gap: 20px;
+    margin: 20px 0;
+	border: 1px solid #dddddd;
+    padding: 10px;
+    border-radius: 10px;
+	min-height: 160px;
+}
+
+.ghalamom-custom-article-box {
+    display: flex;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    gap: 10px;
+}
+
+.ghalamom-cab-image {
+    max-width: auto;
+    overflow: hidden;
+}
+
+.ghalamom-cab-image img {
+    display: block;
+	width: 270px;
+    height: 135px;
+    object-fit: cover;
+	border-radius:10px;
+	aspect-ratio: 1 / 1; 
+}
+
+.ghalamom-cab-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+	justify-content: space-between;
+	margin-top: -50px;
+}
+
+.ghalamom-cab-content h2 {
+    margin: 0 0 10px;
+    font-size: 16px !important; 
+	color: #0f0c29
+}
+
+/* عرض باکس */
+a.ghalamom-custom-article-box{
+	width:100%
+}
+
+@media screen and (max-width: 767px){
+    selector .elementor-image-box-wrapper{
+        display: flex;
+    }
+}
+
+.ghalamom-cab-button {
+    display: inline-block;
+    background: #ef4056;
+    color: #fff !important;
+    padding: 4px 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+    font-weight: 400;
+}
+
+.ghalamom-cab-button:hover {
+    box-shadow: 0 4px 12px #ef405650;
+}
+
+.ghalamom-custom-article-box2 {
+	width:auto;
+}
+
+@media screen and (max-width: 768px){
+
+.ghalamom-custom-article-box2 {
+	width:40%;
+}
+
+ghalamom-cab-button{
+	padding:10px
+}	
+
+.ghalamom-custom-article-box-container {
+	gap:10px;
+}
+	
+.ghalamom-cab-content h2 {
+    font-size: 14px !important;
+}
+
+.ghalamom-cab-price{
+    font-size: 13px !important;
+}
+
+.ghalamom-cab-image {
+    max-width: 50%;
+    overflow: hidden;
+}
+
+.ghalamom-cab-button{
+padding: 8px 16px;
+border-radius:8px;
+}
+}
+
+/* استایل نمایش مقالات در نوشته ها با شورت کد */
