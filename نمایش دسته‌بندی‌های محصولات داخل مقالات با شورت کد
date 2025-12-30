@@ -1,0 +1,68 @@
+// نمایش دسته‌بندی‌های محصولات داخل مقالات
+// [beban_product_cats id="12,18,25"]
+
+function beban_product_cats_shortcode($atts) {
+    $atts = shortcode_atts([
+        'id' => '',
+    ], $atts, 'beban_product_cats');
+
+    $ids = array_map('trim', explode(',', $atts['id']));
+    if (empty($ids)) return '';
+
+    ob_start();
+    echo '<div class="beban-custom-product-box-container">';
+
+    foreach ($ids as $cat_id) {
+
+        if (!is_numeric($cat_id)) continue;
+
+        $term = get_term($cat_id, 'product_cat');
+        if (!$term || is_wp_error($term)) continue;
+
+        $title = $term->name;
+        $link  = get_term_link($term->term_id, 'product_cat');
+
+        // تصویر دسته‌بندی
+        $thumbnail_id = get_term_meta($term->term_id, 'thumbnail_id', true);
+        $image = wp_get_attachment_image_src($thumbnail_id, 'medium')[0];
+
+        if (!$image) {
+            $image = wc_placeholder_img_src('medium');
+        }
+        ?>
+
+        <!-- کل باکس لینک شده -->
+        <a href="<?php echo esc_url($link); ?>" target="_blank" class="beban-custom-product-box2" aria-label="<?php echo esc_attr('مشاهده دسته ' . $title); ?>">
+
+            <div class="beban-cpb-image">
+                <img src="<?php echo esc_url($image); ?>" alt="<?php echo esc_attr($title); ?>">
+            </div>
+
+            <div class="beban-cpb-content">
+
+                <!-- عنوان دسته -->
+                <h2>
+                    <a href="<?php echo esc_url($link); ?>" target="_blank">
+                        <?php echo esc_html($title); ?>
+                    </a>
+                </h2>
+
+                <!-- دکمه -->
+                <a href="<?php echo esc_url($link); ?>" 
+                   target="_blank" 
+                   class="beban-cpb-button" 
+                   aria-label="<?php echo esc_attr('مشاهده محصولات ' . $title); ?>">
+                    مشاهده محصولات
+                </a>
+
+            </div>
+
+        </a>
+
+        <?php
+    }
+
+    echo '</div>';
+    return ob_get_clean();
+}
+add_shortcode('beban_product_cats', 'beban_product_cats_shortcode');
