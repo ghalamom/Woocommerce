@@ -1,0 +1,20 @@
+// اضافه کردن دکمه لینک دار به سبد خرید خالی پاپ آپی
+add_filter( 'woocommerce_cart_is_empty', function( $is_empty ) {
+    add_action( 'woocommerce_after_mini_cart', function() {
+        ?>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const emptyMsg = document.querySelector('.woocommerce-mini-cart__empty-message');
+            if (emptyMsg && !document.querySelector('.empty-cart-button')) {
+                const btn = document.createElement('a');
+                btn.href = 'https://kianowood.ir/product-categories/walnut-wood-types/';
+                btn.className = 'empty-cart-button';
+                btn.textContent = 'انواع چوب گردو';
+                emptyMsg.insertAdjacentElement('afterend', btn);
+            }
+        });
+        </script>
+        <?php
+    });
+    return $is_empty;
+});
