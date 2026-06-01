@@ -1,0 +1,37 @@
+<script>
+jQuery(document).ready(function($) {
+    // کلاس‌های ویجت‌ها
+    const widget1 = '.filter-packs';
+    const widget2 = '.filter-other-products';
+
+    // تابع برای غیرفعال کردن فیلتر مقابل
+    function clearOtherFilter(targetWidgetSelector) {
+        const $target = $(targetWidgetSelector);
+        
+        // برداشتن تیک تمام رادیوها
+        const $radios = $target.find('input[type="radio"]');
+        $radios.prop('checked', false);
+        
+        // برداشتن کلاس استایل انتخاب‌شده (اگر وجود داشته باشد)
+        $target.find('.jet-radio-list__row').removeClass('is-checked');
+
+        // ارسال رویداد به جت‌انجن برای پاک شدن فیلتر از دیتابیس/AJAX
+        // این بخش باعث می‌شود فیلتر دوم واقعاً غیرفعال شود
+        $target.find('input[type="radio"]').trigger('change');
+    }
+
+    // گوش دادن به تغییرات در ویجت اول
+    $(document).on('change', widget1 + ' input[type="radio"]', function() {
+        if($(this).is(':checked')) {
+            clearOtherFilter(widget2);
+        }
+    });
+
+    // گوش دادن به تغییرات در ویجت دوم
+    $(document).on('change', widget2 + ' input[type="radio"]', function() {
+        if($(this).is(':checked')) {
+            clearOtherFilter(widget1);
+        }
+    });
+});
+</script>
